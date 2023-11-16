@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F1F1F1"
+    tools:context=".Profile">
+
+    <View
+        android:id="@+id/view5"
+        android:layout_width="425dp"
+        android:layout_height="212dp"
+        android:background="#00A656"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.533"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:src="@drawable/profile_image"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.034" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Colombo , SriLanka"
+        android:textAlignment="textStart"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.557"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.191" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Emily Winchester"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.149" />
+
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:backgroundTint="#6BAB7D"
+        android:src="@drawable/location_icon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.337"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.19" />
+
+
+    <TextView
+        android:id="@+id/humidity"
+        android:layout_width="42dp"
+        android:layout_height="30dp"
+        android:elevation="15dp"
+        android:text="74%"
+        android:textColor="#757373"
+        android:textSize="22sp"
+        app:layout_constraintBottom_toBottomOf="@+id/temp"
+        app:layout_constraintEnd_toEndOf="@+id/temp"
+        app:layout_constraintHorizontal_bias="0.555"
+        app:layout_constraintStart_toStartOf="@+id/temp"
+        app:layout_constraintTop_toTopOf="@+id/temp"
+        app:layout_constraintVertical_bias="0.766" />
+
+    <TextView
+        android:id="@+id/temp2"
+        android:layout_width="105dp"
+        android:layout_height="120dp"
+        android:background="@drawable/button2"
+        android:drawableTop="@drawable/temperature_icon"
+        android:elevation="10dp"
+        android:padding="15dp"
+        android:text="Temperature"
+        android:textAlignment="center"
+        android:textColor="#033705"
+        android:textSize="13.1sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.302" />
+
+    <TextView
+        android:id="@+id/temp3"
+        android:layout_width="105dp"
+        android:layout_height="120dp"
+        android:background="@drawable/button2"
+        android:drawableTop="@drawable/light_icon"
+        android:elevation="15dp"
+        android:padding="15dp"
+        android:text="Light Status"
+        android:textAlignment="center"
+        android:textColor="#033705"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.905"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.302" />
+
+    <TextView
+        android:id="@+id/temp"
+        android:layout_width="105dp"
+        android:layout_height="120dp"
+        android:background="@drawable/button2"
+        android:drawableTop="@drawable/humidityicon"
+        android:elevation="10dp"
+        android:padding="15dp"
+        android:text="Humidity"
+        android:textAlignment="center"
+        android:textColor="#033705"
+        android:textSize="13.1sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.088"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.302" />
+
+    <TextView
+        android:id="@+id/temperature"
+        android:layout_width="48dp"
+        android:layout_height="34dp"
+        android:elevation="15dp"
+        android:text="23°c"
+        android:textColor="#757373"
+        android:textSize="22sp"
+        app:layout_constraintBottom_toBottomOf="@+id/temp2"
+        app:layout_constraintEnd_toEndOf="@+id/temp2"
+        app:layout_constraintHorizontal_bias="0.517"
+        app:layout_constraintStart_toStartOf="@+id/temp2"
+        app:layout_constraintTop_toTopOf="@+id/temp2"
+        app:layout_constraintVertical_bias="0.793" />
+
+
+    <TextView
+        android:id="@+id/light"
+        android:layout_width="64dp"
+        android:layout_height="35dp"
+        android:elevation="15dp"
+        android:text="!"
+        android:textColor="#757373"
+        android:textSize="22sp"
+        app:layout_constraintBottom_toBottomOf="@+id/temp3"
+        app:layout_constraintEnd_toEndOf="@+id/temp3"
+        app:layout_constraintHorizontal_bias="0.517"
+        app:layout_constraintStart_toStartOf="@+id/temp3"
+        app:layout_constraintTop_toTopOf="@+id/temp3"
+        app:layout_constraintVertical_bias="0.793" />
+
+
+    <TextView
+        android:id="@+id/live_weather"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-black"
+        android:text="Live Weather"
+        android:textAlignment="textStart"
+        android:textColor="#757373"
+        android:textSize="17sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.106"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.433" />
+
+
+    <View
+        android:layout_width="345dp"
+        android:layout_height="140dp"
+        android:background="@drawable/button2"
+        android:elevation="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.553" />
+
+    <TextView
+        android:id="@+id/favourite_plant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-black"
+        android:text="Favourite Plants"
+        android:textAlignment="textStart"
+        android:textColor="#757373"
+        android:textSize="17sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.122"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.667" />
+
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollView2"
+        android:layout_width="424dp"
+        android:layout_height="279dp"
+        app:layout_constraintBottom_toBottomOf="@+id/bottom_navigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/pinkrose"
+                android:layout_width="200dp"
+                android:layout_height="198dp"
+                android:clickable="true"
+                android:src="@drawable/pinkrose" />
+
+            <ImageView
+                android:id="@+id/yarrow"
+                android:layout_width="200dp"
+                android:layout_height="198dp"
+                android:clickable="true"
+                android:src="@drawable/yarrow" />
+
+            <ImageView
+                android:id="@+id/ageratum"
+                android:layout_width="200dp"
+                android:layout_height="198dp"
+                android:clickable="true"
+                android:src="@drawable/ageratum" />
+
+            <ImageView
+                android:id="@+id/lavender"
+                android:layout_width="200dp"
+                android:layout_height="198dp"
+                android:clickable="true"
+                android:src="@drawable/lavender" />
+
+            <ImageView
+                android:id="@+id/jasmine"
+                android:layout_width="200dp"
+                android:layout_height="198dp"
+                android:clickable="true"
+                android:src="@drawable/jasmine" />
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.998"
+        app:itemTextColor="@drawable/selector"
+        android:background="@drawable/navigation_background"
+        app:itemIconTint="@drawable/selector"
+        app:menu="@menu/menu_navigation"/>
+
+    <ImageView
+        android:id="@+id/imageView7"
+        android:layout_width="225dp"
+        android:layout_height="181dp"
+        android:elevation="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.561"
+        app:srcCompat="@drawable/weatherimage" />
+
+    <TextView
+        android:id="@+id/cloudy"
+        android:layout_width="107dp"
+        android:layout_height="42dp"
+        android:elevation="15dp"
+        android:text="Sunny Cloudy"
+        android:textColor="#757373"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.776"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.579" />
+
+    <TextView
+        android:id="@+id/celsius"
+        android:layout_width="93dp"
+        android:layout_height="55dp"
+        android:elevation="15dp"
+        android:text="32°C"
+        android:textColor="#757373"
+        android:textSize="35sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.786"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.522" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

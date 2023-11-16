@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "472017619587",
+    "project_id": "plantopia-a0f4c",
+    "storage_bucket": "plantopia-a0f4c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:472017619587:android:5758f14f5a1f928b45a9b6",
+        "android_client_info": {
+          "package_name": "com.plants.plantopia"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYpbTGqPNGe0YIIfJ1q1uSbSD9bEar-B0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
