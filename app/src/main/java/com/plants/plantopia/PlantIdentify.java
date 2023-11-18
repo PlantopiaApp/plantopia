@@ -85,6 +85,7 @@ public class PlantIdentify extends AppCompatActivity {
         imageView = findViewById(R.id.imageView);
         resultTextView = findViewById(R.id.resultTextView);
     }
+
     public void identifyPlant(View view) {
         if (checkCameraPermission() && checkGalleryPermission()) {
             showImagePickerDialog();
@@ -92,6 +93,7 @@ public class PlantIdentify extends AppCompatActivity {
             requestPermissions();
         }
     }
+
     private boolean checkStoragePermission() {
         return ContextCompat.checkSelfPermission(
                 this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
@@ -228,52 +230,56 @@ public class PlantIdentify extends AppCompatActivity {
     }
 
     private void identifyPlantFromUri(Uri imageUri) {
-        if (checkStoragePermission()) {
-            PlantIdApiService apiService = RetrofitClient.getClient().create(PlantIdApiService.class);
+        try {
+            if (checkStoragePermission()) {
+                PlantIdApiService apiService = RetrofitClient.getClient().create(PlantIdApiService.class);
 
-            // Convert the API key to RequestBody
-            RequestBody apiKey = RequestBody.create(MediaType.parse("text/plain"), "OxAjFfQxUTDGwexU80oQ3TerFIBcr3I8R4UgGAVjHVOpSRnQzy");
+                // Convert the API key to RequestBody
+                RequestBody apiKey = RequestBody.create(MediaType.parse("text/plain"), "OxAjFfQxUTDGwexU80oQ3TerFIBcr3I8R4UgGAVjHVOpSRnQzy");
 
-            // Convert the imageUri to File
-            File imageFile = new File(ImageUtils.getRealPathFromUri(PlantIdentify.this, imageUri));
+                // Convert the imageUri to File
+                File imageFile = new File(ImageUtils.getRealPathFromUri(PlantIdentify.this, imageUri));
 
-            // Convert the imageFile to RequestBody
-            RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), imageFile);
+                // Convert the imageFile to RequestBody
+                RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), imageFile);
 
-            // Convert the RequestBody to MultipartBody.Part
-            MultipartBody.Part imagePart = MultipartBody.Part.createFormData("images", imageFile.getName(), requestFile);
+                // Convert the RequestBody to MultipartBody.Part
+                MultipartBody.Part imagePart = MultipartBody.Part.createFormData("images", imageFile.getName(), requestFile);
 
-            // Make the API request
-            Call<PlantIdentificationResponse> call = apiService.identifyPlant(apiKey, imagePart);
-            call.enqueue(new Callback<PlantIdentificationResponse>() {
-                @Override
-                public void onResponse(Call<PlantIdentificationResponse> call, Response<PlantIdentificationResponse> response) {
-                    // Hide loading indicator (ProgressBar) if added one
+                // Make the API request
+                Call<PlantIdentificationResponse> call = apiService.identifyPlant(apiKey, imagePart);
+                call.enqueue(new Callback<PlantIdentificationResponse>() {
+                    @Override
+                    public void onResponse(Call<PlantIdentificationResponse> call, Response<PlantIdentificationResponse> response) {
+                        // Hide loading indicator (ProgressBar) if added one
 
-                    if (response.isSuccessful()) {
-                        String plantName = response.body().getSuggestions().get(0).getPlantName();
-                        // Clear previous result and display the new plant name
-                        resultTextView.setText("Plant Name: " + plantName);
-                    } else {
-                        // Log the error response for debugging
-                        Log.e("API Error", "Error: " + response.code() + " - " + response.message());
+                        if (response.isSuccessful()) {
+                            String plantName = response.body().getSuggestions().get(0).getPlantName();
+                            // Clear previous result and display the new plant name
+                            resultTextView.setText("Plant Name: " + plantName);
+                        } else {
+                            // Log the error response for debugging
+                            Log.e("API Error", "Error: " + response.code() + " - " + response.message());
 
-                        // Display a more specific error message or handle the failure gracefully
-                        Toast.makeText(PlantIdentify.this, "Failed to identify plant. Please try again onResponse.", Toast.LENGTH_SHORT).show();
+                            // Display a more specific error message or handle the failure gracefully
+                            Toast.makeText(PlantIdentify.this, "Failed to identify plant. Please try again onResponse.", Toast.LENGTH_SHORT).show();
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(Call<PlantIdentificationResponse> call, Throwable t) {
-                    Log.e("API Error", "Failed to identify plant. Error: " + t.getMessage());
-                    Toast.makeText(PlantIdentify.this, "Failed to identify plant. Please try again.", Toast.LENGTH_SHORT).show();
-                }
+                    @Override
+                    public void onFailure(Call<PlantIdentificationResponse> call, Throwable t) {
+                        Log.e("API Error", "Failed to identify plant. Error: " + t.getMessage());
+                        Toast.makeText(PlantIdentify.this, "Failed to identify plant. Please try again.", Toast.LENGTH_SHORT).show();
+                    }
 
-            });
-        } else {
-            // Request storage permissions
-            requestStoragePermissions();
+                });
+            } else {
+                // Request storage permissions
+                requestStoragePermissions();
+            }
+
+        } catch (Exception exception) {
+            Toast.makeText(this,"Plant Identify Error "+ exception.getMessage() , Toast.LENGTH_SHORT).show();
         }
-
     }
 }
