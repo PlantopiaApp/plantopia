@@ -21,7 +21,7 @@
         app:layout_constraintHorizontal_bias="0.126"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.089" />
+        app:layout_constraintVertical_bias="0.067" />
 
     <TextView
         android:id="@+id/textView5"
@@ -37,7 +37,7 @@
         app:layout_constraintHorizontal_bias="0.191"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.143" />
+        app:layout_constraintVertical_bias="0.111" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -46,7 +46,7 @@
         android:background="@drawable/button2"
         app:cardCornerRadius="30dp"
         app:cardElevation="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/signIn"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonSignUpFacebook"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -59,10 +59,21 @@
             android:padding="25dp">
 
             <EditText
+                android:id="@+id/editTextUsername"
+                android:layout_width="300dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="1dp"
+                android:hint="Username"
+                android:inputType="text"
+                android:padding="15dp"
+                android:selectAllOnFocus="true"
+                android:textColor="#000000" />
+
+            <EditText
                 android:id="@+id/editTextEmail"
                 android:layout_width="300dp"
                 android:layout_height="50dp"
-                android:layout_marginTop="14dp"
+                android:layout_marginTop="22dp"
                 android:hint="Email"
                 android:inputType="textEmailAddress"
                 android:padding="15dp"
@@ -122,10 +133,29 @@
         android:textSize="17dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.49"
+        app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.695" />
+        app:layout_constraintVertical_bias="0.707" />
+
+    <Button
+        android:id="@+id/buttonSignUpFacebook"
+        android:layout_width="350dp"
+        android:layout_height="50dp"
+        android:background="@drawable/signup_button"
+        android:drawableLeft="@drawable/facebooksmall"
+        android:paddingHorizontal="50dp"
+        android:text=" Sign Up with Facebook"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textColor="#475569"
+        android:textSize="17dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.793" />
 
     <Button
         android:id="@+id/signIn"
@@ -145,26 +175,7 @@
         app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.875" />
-
-    <Button
-        android:id="@+id/buttonSignUpFacebook"
-        android:layout_width="350dp"
-        android:layout_height="50dp"
-        android:background="@drawable/signup_button"
-        android:drawableLeft="@drawable/facebooksmall"
-        android:paddingHorizontal="50dp"
-        android:text=" Sign Up with Facebook"
-        android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:textColor="#475569"
-        android:textSize="17dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.49"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.781" />
+        app:layout_constraintVertical_bias="0.884" />
 
     <TextView
         android:id="@+id/textView10"
@@ -182,7 +193,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.906" />
+        app:layout_constraintVertical_bias="0.925" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

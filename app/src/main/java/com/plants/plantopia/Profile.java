@@ -17,6 +17,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class Profile extends AppCompatActivity implements SensorEventListener {
 
+    private String username;
+    private TextView editTextUsername;
     private SensorManager sensorManager;
     private TextView humidity, temp, light;
     private Sensor tempSensor, humiditySensor, lightSensor;
@@ -25,6 +27,18 @@ public class Profile extends AppCompatActivity implements SensorEventListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        // Get the username from the Intent
+        Intent intent = getIntent();
+        username = intent.getStringExtra("USERNAME_KEY");
+
+        // Find the TextView for username
+        editTextUsername = findViewById(R.id.textView4);
+
+        // Set the username to the TextView
+        if (username != null) {
+            editTextUsername.setText(username);
+        }
 
         //references to the text views for displaying the sensor readings
         humidity = findViewById(R.id.humidity);

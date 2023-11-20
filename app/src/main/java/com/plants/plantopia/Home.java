@@ -21,6 +21,8 @@ public class Home extends AppCompatActivity {
 
     private Button btnIdentify;
 
+    private String username;
+    private TextView editTextUsername;
     private Dialog dialogg;
     ImageView homePlant;
     private int questionIndex = 0;
@@ -42,6 +44,18 @@ public class Home extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        // Get the username from the Intent
+        Intent intent = getIntent();
+        username = intent.getStringExtra("USERNAME_KEY");
+
+        // Find the TextView for username
+        editTextUsername = findViewById(R.id.editTextUsername);
+
+        // Set the username to the TextView
+        if (username != null) {
+            editTextUsername.setText("Hello " + username + ",");
+        }
 
         btnIdentify = (Button) findViewById(R.id.btnIdentify);
         btnIdentify.setOnClickListener(new View.OnClickListener() {
@@ -87,6 +101,7 @@ public class Home extends AppCompatActivity {
                     return true;
                 } else if (itemId == R.id.profile) {
                     startActivity(new Intent(getApplicationContext(), Profile.class));
+                    intent.putExtra("USERNAME_KEY", username);
                     overridePendingTransition(0, 0);
                     return true;
                 }
@@ -95,6 +110,16 @@ public class Home extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Check if username is not null, and set it to the TextView
+        if (username != null) {
+            editTextUsername.setText("Hello " + username + ",");
+        }
     }
 
     public void openPlantIdentify() {

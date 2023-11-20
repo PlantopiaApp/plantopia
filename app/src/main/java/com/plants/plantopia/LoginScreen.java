@@ -36,6 +36,7 @@ public class LoginScreen extends AppCompatActivity {
     GoogleSignInClient gsc;
     CallbackManager callbackManager;
 
+    String username;
     private Button signup;
     private Button buttonLogin;
     Button buttonSignInFacebook;
@@ -53,6 +54,10 @@ public class LoginScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_screen);
+
+        // Retrieve the username from the Intent
+        Intent intent = getIntent();
+        username = intent.getStringExtra("USERNAME_KEY");
 
         callbackManager = CallbackManager.Factory.create();
 
@@ -95,7 +100,7 @@ public class LoginScreen extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         muUer = mAuth.getCurrentUser();
 
-        // SignUp button
+        // Don't hava an account SignUp button
         signup = findViewById(R.id.signup);
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,7 +109,7 @@ public class LoginScreen extends AppCompatActivity {
             }
         });
 
-        //SignIn button
+        //Login button
         buttonLogin = findViewById(R.id.buttonLogin);
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,11 +136,11 @@ public class LoginScreen extends AppCompatActivity {
         String password = editTextPassword1.getText().toString();
 
         if(!email.matches(emailPattern)){
-            editTextEmail.setError("Enter valid Email address!");
+            editTextEmail.setError("Enter a valid Email address!");
         }else if(password.isEmpty() || password.length()<6){
-            editTextPassword1.setError("Enter Proper Password!");
+            editTextPassword1.setError("Enter a Proper Password!");
         }else{
-            progressDialog.setMessage("Please wait while Login...");
+            progressDialog.setMessage("Please wait while Logging in...");
             progressDialog.setTitle("Login");
             progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.show();
@@ -145,6 +150,8 @@ public class LoginScreen extends AppCompatActivity {
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()){
                         progressDialog.dismiss();
+                        // Retrieve the username from the FirebaseUser object
+                        username = muUer.getDisplayName();
                         sendUserToNextActivity();
                         Toast.makeText(LoginScreen.this, "Login Successful", Toast.LENGTH_SHORT).show();
                     }else{
@@ -157,6 +164,7 @@ public class LoginScreen extends AppCompatActivity {
     }
     private void sendUserToNextActivity() {
         Intent intent = new Intent(this, Location.class);
+        intent.putExtra("USERNAME_KEY", username);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
@@ -167,7 +175,6 @@ public class LoginScreen extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 1000){
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-
             try {
                 task.getResult(ApiException.class);
                 navigateToSecondActivity();
