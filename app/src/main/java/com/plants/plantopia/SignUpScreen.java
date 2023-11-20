@@ -102,7 +102,7 @@ public class SignUpScreen extends AppCompatActivity {
     }
 
     private void sendUserToNextActivity() {
-        Intent intent = new Intent(this, Location.class);
+        Intent intent = new Intent(this, LoginScreen.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }

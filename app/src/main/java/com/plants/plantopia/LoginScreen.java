@@ -12,16 +12,33 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.Collections;
+
 public class LoginScreen extends AppCompatActivity {
+
+    GoogleSignInOptions gso;
+    GoogleSignInClient gsc;
+    CallbackManager callbackManager;
 
     private Button signup;
     private Button buttonLogin;
+    Button buttonSignInFacebook;
     Button buttonSignInGoogle;
 
     EditText editTextEmail, editTextPassword1;
@@ -37,11 +54,46 @@ public class LoginScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_screen);
 
+        callbackManager = CallbackManager.Factory.create();
+
+        // Signup with facebook
+        LoginManager.getInstance().registerCallback(callbackManager,
+                new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        startActivity(new Intent(LoginScreen.this, Location.class));
+                        finish();
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        // No need to handle cancel
+                    }
+
+                    @Override
+                    public void onError(@NonNull FacebookException exception) {
+                        // No need to handle error
+                    }
+                });
+
+        // Set up Google login
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+        gsc = GoogleSignIn.getClient(this,gso);
+
+
+        buttonSignInGoogle = (Button) findViewById(R.id.buttonSignInGoogle);
+        buttonSignInGoogle.setOnClickListener(v -> openLocation());
+
+        buttonSignInFacebook = (Button) findViewById(R.id.buttonSignInFacebook);
+        buttonSignInFacebook.setOnClickListener(v -> LoginManager.getInstance().logInWithReadPermissions(LoginScreen.this, Collections.singletonList("public_profile")));
+
+
+        // Signup using email and password
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextPassword1 = findViewById(R.id.editTextPassword1);
         progressDialog = new ProgressDialog(this);
-        mAuth=FirebaseAuth.getInstance();
-        muUer=mAuth.getCurrentUser();
+        mAuth = FirebaseAuth.getInstance();
+        muUer = mAuth.getCurrentUser();
 
         // SignUp button
         signup = findViewById(R.id.signup);
@@ -61,14 +113,12 @@ public class LoginScreen extends AppCompatActivity {
             }
         });
 
-        buttonSignInGoogle = findViewById(R.id.buttonSignInGoogle);
-        buttonSignInGoogle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LoginScreen.this, GoogleSignInActivity.class);
-                startActivity(intent);
-            }
-        });
+    }
+
+    //Email button open to location screen
+    public void openLocation() {
+        Intent intent = gsc.getSignInIntent();
+        startActivityForResult(intent,1000);
     }
 
     public void openSignupScreen() {
@@ -108,6 +158,28 @@ public class LoginScreen extends AppCompatActivity {
     private void sendUserToNextActivity() {
         Intent intent = new Intent(this, Location.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1000){
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+
+            try {
+                task.getResult(ApiException.class);
+                navigateToSecondActivity();
+            } catch (ApiException e) {
+                Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+    // Navigate to the Location screen
+    void navigateToSecondActivity(){
+        finish();
+        Intent intent = new Intent(LoginScreen.this,Location.class);
         startActivity(intent);
     }
 }
