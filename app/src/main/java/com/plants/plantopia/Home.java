@@ -20,7 +20,7 @@ import android.app.AlertDialog;
 public class Home extends AppCompatActivity {
 
     private Button btnIdentify;
-
+    Button species;
     private String username;
     private TextView editTextUsername;
     private Dialog dialogg;
@@ -57,11 +57,21 @@ public class Home extends AppCompatActivity {
             editTextUsername.setText("Hello " + username + ",");
         }
 
+        // Open Button Identify
         btnIdentify = (Button) findViewById(R.id.btnIdentify);
         btnIdentify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openPlantIdentify();
+            }
+        });
+
+        // Open Button species
+        species = (Button) findViewById(R.id.species);
+        species.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openPlantSpecies();
             }
         });
 
@@ -110,6 +120,10 @@ public class Home extends AppCompatActivity {
             }
         });
 
+    }
+    public void openPlantSpecies() {
+        Intent intent = new Intent(this, com.plants.plantopia.SpeciesActivity.class);
+        startActivity(intent);
     }
 
     @Override

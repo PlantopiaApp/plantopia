@@ -35,6 +35,9 @@
         android:theme="@style/Theme.Plantopia"
         tools:targetApi="31">
         <activity
+            android:name=".SpeciesActivity"
+            android:exported="false" />
+        <activity
             android:name=".FacebookAuthActivity"
             android:exported="false" />
         <activity
