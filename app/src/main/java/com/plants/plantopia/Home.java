@@ -280,7 +280,6 @@ public class Home extends AppCompatActivity {
         failDialogTitle.setText("Sorry!");
         failDialogMessage.setText("Your plant is in poor condition. It seems you are not taking great care of it.");
 
-        // Customize the image as needed
         // failDialogImage.setImageResource(R.drawable.your_custom_image);
 
         builder.setCancelable(false); // Set cancelable property directly on the builder
