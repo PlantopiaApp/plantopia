@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class PlantIdentificationResponse {
-
+//drcfvgbhj
     @SerializedName("suggestions")
     private List<PlantSuggestion> suggestions;
 
