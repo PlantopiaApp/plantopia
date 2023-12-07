@@ -24,7 +24,7 @@ public class Home extends AppCompatActivity {
     private String username;
     private TextView editTextUsername;
     private Dialog dialogg;
-    ImageView homePlant;
+    ImageView homePlant, officePlant, outsidePlant;
     private int questionIndex = 0;
     private int yesCount = 0;
     private int noCount = 0;
@@ -93,6 +93,22 @@ public class Home extends AppCompatActivity {
             }
         });
 
+        officePlant = (ImageView) findViewById(R.id.imageView5);
+        officePlant.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openOfficePlant();
+            }
+        });
+
+        outsidePlant = (ImageView) findViewById(R.id.imageView6);
+        outsidePlant.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openOutsidePlant();
+            }
+        });
+
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
 
         bottomNavigationView.setSelectedItemId(R.id.dashboard);
@@ -138,6 +154,16 @@ public class Home extends AppCompatActivity {
 
     public void openPlantIdentify() {
         Intent intent = new Intent(this, com.plants.plantopia.PlantIdentify.class);
+        startActivity(intent);
+    }
+
+    public void openOfficePlant() {
+        Intent intent = new Intent(this, com.plants.plantopia.OfficePlant.class);
+        startActivity(intent);
+    }
+
+    public void openOutsidePlant() {
+        Intent intent = new Intent(this, com.plants.plantopia.OutsidePlants.class);
         startActivity(intent);
     }
 
