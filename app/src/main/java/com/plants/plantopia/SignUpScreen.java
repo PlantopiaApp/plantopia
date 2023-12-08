@@ -162,30 +162,29 @@ public class SignUpScreen extends AppCompatActivity {
             progressDialog.show();
 
             // User signup using firebase
-            mAuth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                // Set display name (username)
-                                FirebaseUser user = mAuth.getCurrentUser();
-                                if (user != null) {
-                                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                            .setDisplayName(username)
-                                            .build();
-                                    user.updateProfile(profileUpdates);
-                                }
-
-                                // Dismiss registration message
-                                progressDialog.dismiss();
-                                sendUserToNextActivity();
-                                Toast.makeText(SignUpScreen.this, "Registration Successful", Toast.LENGTH_SHORT).show();
-                            } else {
-                                progressDialog.dismiss();
-                                Toast.makeText(SignUpScreen.this, "Registration Failed! " + task.getException(), Toast.LENGTH_SHORT).show();
-                            }
+            mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()) {
+                        // Set display name (username)
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        if (user != null) {
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                    .setDisplayName(username)
+                                    .build();
+                            user.updateProfile(profileUpdates);
                         }
-                    });
+
+                        // Dismiss registration message
+                        progressDialog.dismiss();
+                        sendUserToNextActivity();
+                        Toast.makeText(SignUpScreen.this, "Registration Successful", Toast.LENGTH_SHORT).show();
+                    } else {
+                        progressDialog.dismiss();
+                        Toast.makeText(SignUpScreen.this, "Registration Failed! " + task.getException(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
         }
 
     }
