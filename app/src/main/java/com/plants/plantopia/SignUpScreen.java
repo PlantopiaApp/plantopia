@@ -104,8 +104,8 @@ public class SignUpScreen extends AppCompatActivity {
         buttonSignUpGoogle.setOnClickListener(v -> performGoogleSignin());
 
         progressDialog = new ProgressDialog(this);
-        mAuth=FirebaseAuth.getInstance();
-        muUer=mAuth.getCurrentUser();
+        mAuth = FirebaseAuth.getInstance();
+        muUer = mAuth.getCurrentUser();
 
         //SignUp Button click
         buttonSignUp.setOnClickListener(new View.OnClickListener() {
@@ -213,11 +213,15 @@ public class SignUpScreen extends AppCompatActivity {
     }
 
     private void sendUserToNextActivity() {
-        // Retrieve the username from the FirebaseUser object
-        String username = muUer.getDisplayName();
         Intent intent = new Intent(this, LoginScreen.class);
+
+        // Retrieve the username from the FirebaseUser object
+        String username;
+        if (muUer != null) {
+            username = muUer.getDisplayName();
+            intent.putExtra("USERNAME_KEY", username );
+        }
         // Add the username as an extra to the Intent
-        intent.putExtra("USERNAME_KEY", username);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }

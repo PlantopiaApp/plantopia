@@ -8,12 +8,14 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class Profile extends AppCompatActivity implements SensorEventListener {
 
@@ -22,6 +24,8 @@ public class Profile extends AppCompatActivity implements SensorEventListener {
     private SensorManager sensorManager;
     private TextView humidity, temp, light;
     private Sensor tempSensor, humiditySensor, lightSensor;
+
+    ImageButton logout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +38,9 @@ public class Profile extends AppCompatActivity implements SensorEventListener {
 
         // Find the TextView for username
         editTextUsername = findViewById(R.id.textView4);
+        logout = findViewById(R.id.btnLogout);
+
+        logout.setOnClickListener( v -> this.signOutInApp());
 
         // Set the username to the TextView
         if (username != null) {
@@ -128,5 +135,10 @@ public class Profile extends AppCompatActivity implements SensorEventListener {
         super.onPause();
         // Unregister the sensor listener
         sensorManager.unregisterListener(this);
+    }
+
+    private void signOutInApp() {
+        FirebaseAuth.getInstance().signOut();
+        startActivity(new Intent(getApplicationContext(), LoginScreen.class));
     }
 }
