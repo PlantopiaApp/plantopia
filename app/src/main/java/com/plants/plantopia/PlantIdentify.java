@@ -13,22 +13,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import android.os.AsyncTask;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.Base64;
-
 import okhttp3.MediaType;
-import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.Response;
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Response;
 
-import com.plants.plantopia.PlantIdentificationResponse;
-import com.plants.plantopia.PlantSuggestion;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.NonNull;
@@ -47,6 +42,7 @@ public class PlantIdentify extends AppCompatActivity {
     private static final int GALLERY_PERMISSION_REQUEST = 101;
     private static final int CAMERA_REQUEST = 102;
     private static final int GALLERY_REQUEST = 103;
+    private static final String API_KEY = "OxAjFfQxUTDGwexU80oQ3TerFIBcr3I8R4UgGAVjHVOpSRnQzy";
 
     private ImageView imageView;
     private TextView resultTextView;
@@ -229,50 +225,66 @@ public class PlantIdentify extends AppCompatActivity {
         return Uri.parse(extras.get("image_uri").toString());
     }
 
+    private okhttp3.Response makeRequestToEndPoint(JSONObject data) {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("application/json");
+        RequestBody body = RequestBody.create(mediaType, data.toString());
+        Request request = new Request.Builder()
+                .url("https://plant.id/api/v3/identification")
+                .method("POST", body)
+                .addHeader("Api-Key", PlantIdentify.API_KEY)
+                .addHeader("Content-Type", "application/json")
+                .build();
+        try {
+            okhttp3.Response response = client.newCall(request).execute();
+            return response;
+        } catch ( Exception e ) {
+            Toast.makeText(PlantIdentify.this, "Failed to identify plant. Please try again onResponse.", Toast.LENGTH_SHORT).show();
+        }
+        return null;
+    }
+
     private void identifyPlantFromUri(Uri imageUri) {
         try {
             if (checkStoragePermission()) {
-                PlantIdApiService apiService = RetrofitClient.getClient().create(PlantIdApiService.class);
 
-                // Convert the API key to RequestBody
-                RequestBody apiKey = RequestBody.create(MediaType.parse("text/plain"), "OxAjFfQxUTDGwexU80oQ3TerFIBcr3I8R4UgGAVjHVOpSRnQzy");
 
                 // Convert the imageUri to File
                 File imageFile = new File(ImageUtils.getRealPathFromUri(PlantIdentify.this, imageUri));
 
-                // Convert the imageFile to RequestBody
-                RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), imageFile);
+                // Convert image to base64
+                String base64Image = "data:image/jpg;base64," + ImageUtils.base64EncodeFromFile( imageFile );
 
-                // Convert the RequestBody to MultipartBody.Part
-                MultipartBody.Part imagePart = MultipartBody.Part.createFormData("images", imageFile.getName(), requestFile);
+                //Build body
+                JSONObject data = new JSONObject();
+                // Add image
+                JSONArray images = new JSONArray();
+                images.put(base64Image);
+
+                data.put("images", images.toString()); // test values
+                data.put("similar_images", true);
+                data.put("longitude", 49); // test value
+                data.put("latitude", 10); // test values
+
 
                 // Make the API request
-                Call<PlantIdentificationResponse> call = apiService.identifyPlant(apiKey, imagePart);
-                call.enqueue(new Callback<PlantIdentificationResponse>() {
-                    @Override
-                    public void onResponse(Call<PlantIdentificationResponse> call, Response<PlantIdentificationResponse> response) {
-                        // Hide loading indicator (ProgressBar) if added one
+                Response response = this.makeRequestToEndPoint( data );
 
-                        if (response.isSuccessful()) {
-                            String plantName = response.body().getSuggestions().get(0).getPlantName();
-                            // Clear previous result and display the new plant name
-                            resultTextView.setText("Plant Name: " + plantName);
-                        } else {
-                            // Log the error response for debugging
-                            Log.e("API Error", "Error: " + response.code() + " - " + response.message());
+                if (response != null && response.isSuccessful()) {
+                    String plantName = response.body().toString();
 
-                            // Display a more specific error message or handle the failure gracefully
-                            Toast.makeText(PlantIdentify.this, "Failed to identify plant. Please try again onResponse.", Toast.LENGTH_SHORT).show();
-                        }
-                    }
+//                            .get(0).getPlantName();
+                    // Clear previous result and display the new plant name
+                    resultTextView.setText("Plant Name: " + plantName);
+                } else {
+                    // Log the error response for debugging
+                    Log.e("API Error", "Error: " + response.code() + " - " + response.message());
 
-                    @Override
-                    public void onFailure(Call<PlantIdentificationResponse> call, Throwable t) {
-                        Log.e("API Error", "Failed to identify plant. Error: " + t.getMessage());
-                        Toast.makeText(PlantIdentify.this, "Failed to identify plant. Please try again.", Toast.LENGTH_SHORT).show();
-                    }
+                    // Display a more specific error message or handle the failure gracefully
+                    Toast.makeText(PlantIdentify.this, "Failed to identify plant. Please try again onResponse.", Toast.LENGTH_SHORT).show();
+                }
 
-                });
             } else {
                 // Request storage permissions
                 requestStoragePermissions();
