@@ -2,9 +2,12 @@ package com.plants.plantopia;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.wifi.hotspot2.pps.HomeSp;
 import android.os.Bundle;
 import android.view.View;
@@ -149,6 +152,7 @@ public class LoginScreen extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()){
+                        muUer = mAuth.getCurrentUser();
                         progressDialog.dismiss();
                         // Retrieve the username from the FirebaseUser object
                         username = muUer.getDisplayName();
@@ -163,7 +167,12 @@ public class LoginScreen extends AppCompatActivity {
 }
     }
     private void sendUserToNextActivity() {
-        Intent intent = new Intent(this, Location.class);
+        Intent intent;
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            intent = new Intent(this, Location.class);
+        } else {
+            intent = new Intent(this, Home.class);
+        }
         intent.putExtra("USERNAME_KEY", username);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
