@@ -32,68 +32,82 @@ import java.util.Collections;
 
 public class SignUpScreen extends AppCompatActivity {
 
+    // Text fields
     EditText editTextUsername, editTextEmail, editTextPassword1, editTextConfirmPassword;
+
+    //Buttons
     Button buttonSignUp;
-    String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
-    ProgressDialog progressDialog;
-    CallbackManager callbackManager;
-    GoogleSignInOptions gso;
-    GoogleSignInClient gsc;
     Button buttonSignUpFacebook;
     Button buttonSignUpGoogle;
+
+    // Regex to validate email
+    String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+    ProgressDialog progressDialog;
+
+    // Google Auth
+    GoogleSignInOptions gso;
+    GoogleSignInClient gsc;
     FirebaseAuth mAuth;
     FirebaseUser muUer;
-    private Button signIn;
 
+    // Facebook Callback manager
+    CallbackManager callbackManager;
+
+    private Button signIn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_screen);
 
-        callbackManager = CallbackManager.Factory.create();
-
-        // Signup with facebook
-        LoginManager.getInstance().registerCallback(callbackManager,
-                new FacebookCallback<LoginResult>() {
-                    @Override
-                    public void onSuccess(LoginResult loginResult) {
-                        startActivity(new Intent(SignUpScreen.this, Location.class));
-                        finish();
-                    }
-
-                    @Override
-                    public void onCancel() {
-                        // No need to handle cancel
-                    }
-
-                    @Override
-                    public void onError(@NonNull FacebookException exception) {
-                        // No need to handle error
-                    }
-                });
-
-        // Set up Google login
-        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
-        gsc = GoogleSignIn.getClient(this,gso);
-
-
-        buttonSignUpGoogle = (Button) findViewById(R.id.buttonSignUpGoogle);
-        buttonSignUpGoogle.setOnClickListener(v -> openLocation());
-
+        // Set all views to properties
+        buttonSignUp = findViewById(R.id.buttonSignUp);
         buttonSignUpFacebook = (Button) findViewById(R.id.buttonSignUpFacebook);
-        buttonSignUpFacebook.setOnClickListener(v -> LoginManager.getInstance().logInWithReadPermissions(SignUpScreen.this, Collections.singletonList("public_profile")));
-
-
+        buttonSignUpGoogle = (Button) findViewById(R.id.buttonSignUpGoogle);
         editTextUsername = findViewById(R.id.editTextUsername);
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextPassword1 = findViewById(R.id.editTextPassword1);
         editTextConfirmPassword = findViewById(R.id.editTextConfirmPassword);
+
+        // Setting up Signup with facebook
+        // Create Callback manager
+        callbackManager = CallbackManager.Factory.create();
+
+        // Register facebook callback manager with Facebook callback function
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                // If login is success we navigate to next screen
+                startActivity(new Intent(SignUpScreen.this, Location.class));
+                finish();
+            }
+
+            @Override
+            public void onCancel() {
+                // No need to handle cancel
+            }
+
+            @Override
+            public void onError(@NonNull FacebookException exception) {
+                Toast.makeText(SignUpScreen.this, "Registration Failed! " , Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Set click for facebook signup button.
+        buttonSignUpFacebook.setOnClickListener(v -> LoginManager.getInstance().logInWithReadPermissions(SignUpScreen.this, Collections.singletonList("public_profile")));
+
+        // Set up Google login
+        // Instantiate Google SignIn option, it is used to set the configuration for google login
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+        // Set google SignIn client
+        gsc = GoogleSignIn.getClient(this,gso);
+
+        buttonSignUpGoogle.setOnClickListener(v -> performGoogleSignin());
+
         progressDialog = new ProgressDialog(this);
         mAuth=FirebaseAuth.getInstance();
         muUer=mAuth.getCurrentUser();
 
-        //SignUp Button
-        buttonSignUp = findViewById(R.id.buttonSignUp);
+        //SignUp Button click
         buttonSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,7 +127,7 @@ public class SignUpScreen extends AppCompatActivity {
 
     }
 
-    public void openLocation() {
+    public void performGoogleSignin() {
         Intent intent = gsc.getSignInIntent();
         startActivityForResult(intent,1000);
     }
@@ -124,11 +138,13 @@ public class SignUpScreen extends AppCompatActivity {
     }
 
     private void PerformAuth(){
+        // Retrieve text from the Text Objects
         String username = editTextUsername.getText().toString();
         String email = editTextEmail.getText().toString();
         String password = editTextPassword1.getText().toString();
         String confirmPassword = editTextConfirmPassword.getText().toString();
 
+        // Validating the text fields
         if (username.isEmpty()) {
             editTextUsername.setError("Enter a username");
         } else if (!email.matches(emailPattern)) {
@@ -138,11 +154,14 @@ public class SignUpScreen extends AppCompatActivity {
         } else if (!password.equals(confirmPassword)) {
             editTextConfirmPassword.setError("Password does not match");
         }else{
+
+            // Show registration message
             progressDialog.setMessage("Please wait while Registration...");
             progressDialog.setTitle("Registration");
             progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.show();
 
+            // User signup using firebase
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
@@ -157,12 +176,13 @@ public class SignUpScreen extends AppCompatActivity {
                                     user.updateProfile(profileUpdates);
                                 }
 
+                                // Dismiss registration message
                                 progressDialog.dismiss();
                                 sendUserToNextActivity();
                                 Toast.makeText(SignUpScreen.this, "Registration Successful", Toast.LENGTH_SHORT).show();
                             } else {
                                 progressDialog.dismiss();
-                                Toast.makeText(SignUpScreen.this, "" + task.getException(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SignUpScreen.this, "Registration Failed! " + task.getException(), Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -174,6 +194,8 @@ public class SignUpScreen extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
+
+        // Code 1000 determines google signup
         if(requestCode == 1000){
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
