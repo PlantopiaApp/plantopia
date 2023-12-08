@@ -51,7 +51,7 @@
         android:id="@+id/editTextUsername"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello, Emily!"
+        android:text="Hello, Sharmika!"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
         android:textStyle="bold"
