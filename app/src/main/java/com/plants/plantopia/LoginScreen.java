@@ -8,7 +8,6 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.wifi.hotspot2.pps.HomeSp;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -35,23 +34,24 @@ import java.util.Collections;
 
 public class LoginScreen extends AppCompatActivity {
 
-    GoogleSignInOptions gso;
-    GoogleSignInClient gsc;
+    // Buttons
+    private Button buttonLogin, signup, buttonSignInFacebook, buttonSignInGoogle;
+
+    // Google Authentication
+    GoogleSignInClient googleSignInClient;
+    GoogleSignInOptions googleSignInOptions;
+
+    // Facebook authentication
     CallbackManager callbackManager;
 
-    String username;
-    private Button signup;
-    private Button buttonLogin;
-    Button buttonSignInFacebook;
-    Button buttonSignInGoogle;
+    // Firebase auth
+    FirebaseAuth firebaseAuth;
+    FirebaseUser firebaseUser;
 
+    String username;
+    ProgressDialog progressDialog;
     EditText editTextEmail, editTextPassword1;
     String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
-    ProgressDialog progressDialog;
-
-    FirebaseAuth mAuth;
-    FirebaseUser muUer;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,8 +85,8 @@ public class LoginScreen extends AppCompatActivity {
                 });
 
         // Set up Google login
-        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
-        gsc = GoogleSignIn.getClient(this,gso);
+        googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+        googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
 
 
         buttonSignInGoogle = (Button) findViewById(R.id.buttonSignInGoogle);
@@ -100,8 +100,8 @@ public class LoginScreen extends AppCompatActivity {
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextPassword1 = findViewById(R.id.editTextPassword1);
         progressDialog = new ProgressDialog(this);
-        mAuth = FirebaseAuth.getInstance();
-        muUer = mAuth.getCurrentUser();
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
 
         // Don't hava an account SignUp button
         signup = findViewById(R.id.signup);
@@ -125,7 +125,7 @@ public class LoginScreen extends AppCompatActivity {
 
     //Email button open to location screen
     public void openLocation() {
-        Intent intent = gsc.getSignInIntent();
+        Intent intent = googleSignInClient.getSignInIntent();
         startActivityForResult(intent,1000);
     }
 
@@ -148,14 +148,14 @@ public class LoginScreen extends AppCompatActivity {
             progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.show();
 
-            mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            firebaseAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()){
-                        muUer = mAuth.getCurrentUser();
+                        firebaseUser = firebaseAuth.getCurrentUser();
                         progressDialog.dismiss();
                         // Retrieve the username from the FirebaseUser object
-                        username = muUer.getDisplayName();
+                        username = firebaseUser.getDisplayName();
                         sendUserToNextActivity();
                         Toast.makeText(LoginScreen.this, "Login Successful", Toast.LENGTH_SHORT).show();
                     }else{
