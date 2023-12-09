@@ -29,7 +29,7 @@ public class SpeciesActivity extends AppCompatActivity {
             "Pansy", "Papyrus", "Passion flower", "Peach tree", "Pearly everlasting", "Pennyroyal", "Peony", "Petunia", "Phlox", "Pine", "Poinsettia", "Pond cypress", "Poppy", "Potentilla", "Primrose",
             "Quaking aspen", "Queen palm", "Queen's wreath",
             "Rain lily", "Rat tail cactus", "Red hot poker", "Rose", "Rosemary", "Rowan",
-            "Saffron crocus", "Sage", "Salvia", "Sassafras", "Savory", "Scabiosa", "Sea lavender", "Sedum", "Shasta daisy", "Snapdragon", "Snowdrop", "Sorrel", "Speedwell", "Spicebush", "Squash", "Stargazer lily", "Statice", "Strawberry", "Sunflower", "Sweet pea", "Sweet woodruff", "Sycamore",
+            "Saffron crocus", "Sage", "Salvia", "Sassafras", "Savory", "Scabiosa", "Sea lavender", "Sedum", "Shasta daisy", "Snapdragon", "Snowdrop", "Sorrel", "Speedwell", "Spinach", "Spicebush", "Squash", "Stargazer lily", "Statice", "Strawberry", "Sunflower", "Sweet pea", "Sweet woodruff", "Sycamore",
             "Tarragon", "Thistle", "Thyme", "Ti plant", "Toad lily", "Torenia", "Trailing arbutus", "Trillium", "Tulip",
             "Umbrella plant", "Upland cress", "Upright juniper",
             "Vanilla orchid", "Vegetable amaranth", "Verbena", "Vervain", "Viburnum", "Vinca", "Viola", "Violet",
@@ -59,7 +59,7 @@ public class SpeciesActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String selectedPlant = filteredPlantNames.get(position);
-                Intent intent = new Intent(SpeciesActivity.this, SpeciesDetails.class);
+                Intent intent = new Intent(SpeciesActivity.this, SpeciesDetails2.class);
                 intent.putExtra("plantName", selectedPlant);
                 startActivity(intent);
             }
