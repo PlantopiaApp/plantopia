@@ -22,7 +22,7 @@ public class GetStart extends AppCompatActivity {
         button11.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openScreen11();
+                openLoginScreenActivity();
             }
         });
 
@@ -30,17 +30,17 @@ public class GetStart extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openScreen2();
+                openOnboardingScreen();
             }
         });
     }
 
-    public void openScreen2() {
+    public void openOnboardingScreen() {
         Intent intent = new Intent(this, Screen1.class);
         startActivity(intent);
     }
 
-    public void openScreen11() {
+    public void openLoginScreenActivity() {
         Intent intent = new Intent(this, LoginScreen.class);
         startActivity(intent);
     }

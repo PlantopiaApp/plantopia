@@ -22,8 +22,8 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         // Create an intent to start the main activity
-        final Intent i = new Intent(MainActivity.this, GetStart.class);
-        final Intent home = new Intent(MainActivity.this, Home.class);
+        final Intent getStartIntent = new Intent(MainActivity.this, GetStart.class);
+        final Intent homeIntent = new Intent(MainActivity.this, Home.class);
 
         // Use a handler to delay the start of the main activity
         new Handler().postDelayed(new Runnable() {
@@ -31,10 +31,10 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 FirebaseUser currentUser = mAuth.getCurrentUser();
                 if( currentUser != null) {
-                    home.putExtra("USERNAME_KEY", currentUser.getDisplayName());
-                    startActivity(home);
+                    homeIntent.putExtra("USERNAME_KEY", currentUser.getDisplayName());
+                    startActivity(homeIntent);
                 } else {
-                    startActivity(i);
+                    startActivity(getStartIntent);
                 }
                 // Start the main activity
                 // Finish the splash activity so that it's not shown when back button is pressed

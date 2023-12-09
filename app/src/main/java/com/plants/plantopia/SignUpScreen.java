@@ -32,112 +32,99 @@ import java.util.Collections;
 
 public class SignUpScreen extends AppCompatActivity {
 
+    private final int GOOGLE_SIGN_IN_REQUEST_CODE = 1000;
+
     // Text fields
     EditText editTextUsername, editTextEmail, editTextPassword1, editTextConfirmPassword;
 
     //Buttons
-    Button buttonSignUp;
-    Button buttonSignUpFacebook;
-    Button buttonSignUpGoogle;
+    Button buttonSignUp, buttonSignUpFacebook, buttonSignUpGoogle, signIn;
 
-    // Regex to validate email
+    // Regular expression to validate email
     String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
     ProgressDialog progressDialog;
 
     // Google Auth
-    GoogleSignInOptions gso;
-    GoogleSignInClient gsc;
-    FirebaseAuth mAuth;
-    FirebaseUser muUer;
+    GoogleSignInOptions googleSignInOptions;
+    GoogleSignInClient googleSignInClient;
+    FirebaseAuth firebaseAuth;
+    FirebaseUser firebaseUser;
 
     // Facebook Callback manager
     CallbackManager callbackManager;
 
-    private Button signIn;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_screen);
 
         // Set all views to properties
         buttonSignUp = findViewById(R.id.buttonSignUp);
-        buttonSignUpFacebook = (Button) findViewById(R.id.buttonSignUpFacebook);
-        buttonSignUpGoogle = (Button) findViewById(R.id.buttonSignUpGoogle);
+        buttonSignUpFacebook = findViewById(R.id.buttonSignUpFacebook);
+        buttonSignUpGoogle = findViewById(R.id.buttonSignUpGoogle);
+        signIn = findViewById(R.id.signIn);
         editTextUsername = findViewById(R.id.editTextUsername);
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextPassword1 = findViewById(R.id.editTextPassword1);
         editTextConfirmPassword = findViewById(R.id.editTextConfirmPassword);
 
+        //Initialize progress dialog
+        progressDialog = new ProgressDialog(this);
+
+        // Init Firebase Authentication
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        //SignUp Button click
+        buttonSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signupUsingFireBase();
+            }
+        });
+
         // Setting up Signup with facebook
-        // Create Callback manager
+        // Create Callback manager to manage callbacks into Facebook SDK
         callbackManager = CallbackManager.Factory.create();
 
         // Register facebook callback manager with Facebook callback function
-        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+        LoginManager.getInstance().registerCallback( callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 // If login is success we navigate to next screen
-                startActivity(new Intent(SignUpScreen.this, Location.class));
-                finish();
+                navigateToLocationActivity();
             }
-
             @Override
             public void onCancel() {
                 // No need to handle cancel
             }
-
             @Override
             public void onError(@NonNull FacebookException exception) {
                 Toast.makeText(SignUpScreen.this, "Registration Failed! " , Toast.LENGTH_SHORT).show();
             }
         });
 
-        // Set click for facebook signup button.
+        // Set on click listener for facebook signup button.
         buttonSignUpFacebook.setOnClickListener(v -> LoginManager.getInstance().logInWithReadPermissions(SignUpScreen.this, Collections.singletonList("public_profile")));
 
         // Set up Google login
         // Instantiate Google SignIn option, it is used to set the configuration for google login
-        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
-        // Set google SignIn client
-        gsc = GoogleSignIn.getClient(this,gso);
+        googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+        // Get google SignIn client for signup
+        googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
 
+        //  Set on click listener for google signup
         buttonSignUpGoogle.setOnClickListener(v -> performGoogleSignin());
 
-        progressDialog = new ProgressDialog(this);
-        mAuth = FirebaseAuth.getInstance();
-        muUer = mAuth.getCurrentUser();
-
-        //SignUp Button click
-        buttonSignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PerformAuth();
-            }
-        });
-
-
-        // SignIn button
-        signIn = findViewById(R.id.signIn);
+        // Login screen
         signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openSignInScreen();
             }
         });
-
     }
 
-    public void performGoogleSignin() {
-        Intent intent = gsc.getSignInIntent();
-        startActivityForResult(intent,1000);
-    }
-
-    public void openSignInScreen() {
-        Intent intent = new Intent(this, LoginScreen.class);
-        startActivity(intent);
-    }
-
-    private void PerformAuth(){
+    private void signupUsingFireBase(){
         // Retrieve text from the Text Objects
         String username = editTextUsername.getText().toString();
         String email = editTextEmail.getText().toString();
@@ -146,28 +133,27 @@ public class SignUpScreen extends AppCompatActivity {
 
         // Validating the text fields
         if (username.isEmpty()) {
-            editTextUsername.setError("Enter a username");
-        } else if (!email.matches(emailPattern)) {
+            editTextUsername.setError( "Enter a username" );
+        } else if ( !email.matches(emailPattern) ) {
             editTextEmail.setError("Enter valid Email address!");
-        } else if (password.isEmpty() || password.length() < 6) {
-            editTextPassword1.setError("Password must contain at least 6 characters!");
-        } else if (!password.equals(confirmPassword)) {
-            editTextConfirmPassword.setError("Password does not match");
-        }else{
-
-            // Show registration message
-            progressDialog.setMessage("Please wait while Registration...");
-            progressDialog.setTitle("Registration");
-            progressDialog.setCanceledOnTouchOutside(false);
+        } else if ( password.isEmpty() || password.length() < 6) {
+            editTextPassword1.setError( "Password must contain at least 6 characters!" );
+        } else if ( !password.equals(confirmPassword) ) {
+            editTextConfirmPassword.setError( "Password does not match" );
+        } else{
+            // Show registration message progress dialog
+            progressDialog.setMessage( "Please wait while Registration..." );
+            progressDialog.setTitle( "Registration" );
+            progressDialog.setCanceledOnTouchOutside( false );
             progressDialog.show();
 
             // User signup using firebase
-            mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            firebaseAuth.createUserWithEmailAndPassword( email, password ).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
                         // Set display name (username)
-                        FirebaseUser user = mAuth.getCurrentUser();
+                        FirebaseUser user = firebaseAuth.getCurrentUser();
                         if (user != null) {
                             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                     .setDisplayName(username)
@@ -175,9 +161,9 @@ public class SignUpScreen extends AppCompatActivity {
                             user.updateProfile(profileUpdates);
                         }
 
-                        // Dismiss registration message
+                        // Dismiss registration progress dialogue message
                         progressDialog.dismiss();
-                        sendUserToNextActivity();
+                        sendUserToLoginActivity();
                         Toast.makeText(SignUpScreen.this, "Registration Successful", Toast.LENGTH_SHORT).show();
                     } else {
                         progressDialog.dismiss();
@@ -189,40 +175,53 @@ public class SignUpScreen extends AppCompatActivity {
 
     }
 
+    public void performGoogleSignin() {
+        //create google signin intent from google sdk
+        Intent intent = googleSignInClient.getSignInIntent();
+        // Start activity and wait for result
+        startActivityForResult( intent, GOOGLE_SIGN_IN_REQUEST_CODE );
+    }
+
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        callbackManager.onActivityResult(requestCode, resultCode, data);
-        super.onActivityResult(requestCode, resultCode, data);
+    protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
+        callbackManager.onActivityResult( requestCode, resultCode, data );
+        super.onActivityResult( requestCode, resultCode, data );
 
         // Code 1000 determines google signup
-        if(requestCode == 1000){
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+        if( requestCode == GOOGLE_SIGN_IN_REQUEST_CODE ){
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent( data );
             try {
-                task.getResult(ApiException.class);
-                navigateToSecondActivity();
-            } catch (ApiException e) {
-                Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+                task.getResult( ApiException.class );
+                finish();
+                navigateToLocationActivity();
+            } catch ( ApiException e ) {
+                Toast.makeText( getApplicationContext(), "Something went wrong", Toast.LENGTH_SHORT ).show();
             }
         }
     }
-    // Navigate to the Location screen
-    void navigateToSecondActivity(){
-        finish();
-        Intent intent = new Intent(SignUpScreen.this,Location.class);
-        startActivity(intent);
-    }
 
-    private void sendUserToNextActivity() {
+    private void sendUserToLoginActivity() {
         Intent intent = new Intent(this, LoginScreen.class);
 
         // Retrieve the username from the FirebaseUser object
         String username;
-        if (muUer != null) {
-            username = muUer.getDisplayName();
+        if (firebaseUser != null) {
+            username = firebaseUser.getDisplayName();
             intent.putExtra("USERNAME_KEY", username );
         }
         // Add the username as an extra to the Intent
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    // Navigate to the Location screen
+    void navigateToLocationActivity(){
+        Intent intent = new Intent(SignUpScreen.this, Location.class);
+        startActivity( intent );
+    }
+
+    public void openSignInScreen() {
+        Intent intent = new Intent(this, LoginScreen.class);
         startActivity(intent);
     }
 }
