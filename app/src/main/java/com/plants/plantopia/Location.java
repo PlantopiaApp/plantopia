@@ -61,7 +61,6 @@ public class Location extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
         } else {
             // Location permission is already granted; you can proceed with location access.
-            // You can launch your location-related functionality here.
         }
     }
 
@@ -71,9 +70,8 @@ public class Location extends AppCompatActivity {
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Location permission granted, you can proceed with location access.
-                // You can launch your location-related functionality here.
             } else {
-                // Location permission denied by the user. Handle this scenario (e.g., show a message).
+                // Location permission denied by the user.
             }
         }
     }

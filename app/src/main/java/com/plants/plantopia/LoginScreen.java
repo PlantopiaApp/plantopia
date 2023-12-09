@@ -160,7 +160,7 @@ public class LoginScreen extends AppCompatActivity {
                         Toast.makeText(LoginScreen.this, "Login Successful", Toast.LENGTH_SHORT).show();
                     }else{
                         progressDialog.dismiss();
-                        Toast.makeText(LoginScreen.this,""+task.getException(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginScreen.this,"Login Failed"+task.getException(), Toast.LENGTH_SHORT).show();
                     }
                 }
             });
