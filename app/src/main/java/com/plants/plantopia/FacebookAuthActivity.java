@@ -72,7 +72,7 @@ public class FacebookAuthActivity extends AppCompatActivity {
             }
         });
     }
-
+//on start
     @Override
     public void onStart() {
         super.onStart();
