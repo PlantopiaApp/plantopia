@@ -78,7 +78,7 @@ public class LoginScreen extends AppCompatActivity {
         // Retrieve the username from the Intent and assign it to username
         username = getIntent().getStringExtra("USERNAME_KEY");
 
-        // Signup using email and password
+        // Setup firebase authentication proprties
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
 
@@ -90,8 +90,10 @@ public class LoginScreen extends AppCompatActivity {
         });
 
 
-        // Signup with facebook
+        // Setting up SignIn with facebook
+        // Create Callback manager to manage callbacks into Facebook SDK
         callbackManager = CallbackManager.Factory.create();
+        // Register facebook callback manager with Facebook callback function
         LoginManager.getInstance().registerCallback( callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -109,11 +111,11 @@ public class LoginScreen extends AppCompatActivity {
         });
 
         // Set up Google login
+        // Instantiate Google SignIn option, it is used to set the configuration for google login
         googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+        // Get google SignIn client for signIn
         googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
-
         btnSignInGoogle.setOnClickListener(v -> openGoogleSignInIntent());
-
 
         // Goto Signup screen
         btnSignup.setOnClickListener(new View.OnClickListener() {
@@ -125,9 +127,11 @@ public class LoginScreen extends AppCompatActivity {
     }
 
     private void performLogin(){
+        // Retrieve input values from texts
         String email = editTextEmail.getText().toString();
         String password = editTextPassword1.getText().toString();
 
+        // Validating the input values
         if( !email.matches( emailPattern )){
             editTextEmail.setError( "Enter a valid Email address!" );
         } else if( password.isEmpty() || password.length() < 6 ){
@@ -138,17 +142,19 @@ public class LoginScreen extends AppCompatActivity {
             progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.show();
 
-            firebaseAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            // Process user sign in using firebase API
+            firebaseAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener( new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()){
+                    progressDialog.dismiss();
+                    if ( task.isSuccessful() ){
                         firebaseUser = firebaseAuth.getCurrentUser();
-                        progressDialog.dismiss();
                         // Retrieve the username from the FirebaseUser object
                         username = firebaseUser.getDisplayName();
                         openEnableLocationScreen();
                         Toast.makeText(LoginScreen.this, "Login Successful", Toast.LENGTH_SHORT).show();
-                    }else{
+                   
+                    } else{
                         progressDialog.dismiss();
                         Toast.makeText(LoginScreen.this,"Login Failed"+task.getException(), Toast.LENGTH_SHORT).show();
                     }
@@ -170,14 +176,27 @@ public class LoginScreen extends AppCompatActivity {
 
     //Email button open to location screen
     public void openGoogleSignInIntent() {
+        //create google signin intent from google sdk
         Intent intent = googleSignInClient.getSignInIntent();
+        // Start activity and wait for result
         startActivityForResult( intent, GOOGLE_SIGN_IN_REQUEST_CODE );
     }
 
+    /**
+     * This is a hook function called when new activity is started for result.
+     * Once the result is recieved this method get called and execute the code.
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
         callbackManager.onActivityResult( requestCode, resultCode, data );
         super.onActivityResult( requestCode, resultCode, data );
+
+        // Here we check the request Code 1000 to determine google signup intent result
+        //  if is successful user will be navigated to location activity screen
+
         if( requestCode == GOOGLE_SIGN_IN_REQUEST_CODE ){
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent( data );
             try {
