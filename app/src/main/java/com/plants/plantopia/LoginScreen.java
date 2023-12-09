@@ -191,6 +191,10 @@ public class LoginScreen extends AppCompatActivity {
     protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
         callbackManager.onActivityResult( requestCode, resultCode, data );
         super.onActivityResult( requestCode, resultCode, data );
+
+        // Here we check the request Code 1000 to determine google signup intent result
+        //  if is successful user will be navigated to location activity screen
+
         if( requestCode == GOOGLE_SIGN_IN_REQUEST_CODE ){
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent( data );
             try {
