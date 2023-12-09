@@ -91,7 +91,7 @@ public class SignUpScreen extends AppCompatActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 // If login is success we navigate to next screen
-                navigateToLocationActivity();
+                navigateToEnableLocationActivity();
             }
             @Override
             public void onCancel() {
@@ -182,18 +182,25 @@ public class SignUpScreen extends AppCompatActivity {
         startActivityForResult( intent, GOOGLE_SIGN_IN_REQUEST_CODE );
     }
 
+    /**
+     * This is a hook function called when new activity is started for result.
+     * Once the result is recieved this method get called and execute the code.
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
         callbackManager.onActivityResult( requestCode, resultCode, data );
         super.onActivityResult( requestCode, resultCode, data );
 
-        // Code 1000 determines google signup
+        // Here we check the request Code 1000 to determine google signup intent result
         if( requestCode == GOOGLE_SIGN_IN_REQUEST_CODE ){
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent( data );
             try {
                 task.getResult( ApiException.class );
                 finish();
-                navigateToLocationActivity();
+                navigateToEnableLocationActivity();
             } catch ( ApiException e ) {
                 Toast.makeText( getApplicationContext(), "Something went wrong", Toast.LENGTH_SHORT ).show();
             }
@@ -215,7 +222,7 @@ public class SignUpScreen extends AppCompatActivity {
     }
 
     // Navigate to the Location screen
-    void navigateToLocationActivity(){
+    void navigateToEnableLocationActivity(){
         Intent intent = new Intent(SignUpScreen.this, Location.class);
         startActivity( intent );
     }

@@ -36,6 +36,10 @@ public class Profile extends AppCompatActivity implements SensorEventListener {
         Intent intent = getIntent();
         username = intent.getStringExtra("USERNAME_KEY");
 
+        if ( username == null ) {
+            username = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+        }
+
         // Find the TextView for username
         editTextUsername = findViewById(R.id.textView4);
         logout = findViewById(R.id.btnLogout);

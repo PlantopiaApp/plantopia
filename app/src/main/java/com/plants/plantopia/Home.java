@@ -7,13 +7,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.content.DialogInterface;
 import android.widget.TextView;
 
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 import android.app.AlertDialog;
 
@@ -23,7 +23,7 @@ public class Home extends AppCompatActivity {
     Button species;
     private String username;
     private TextView editTextUsername;
-    private Dialog dialogg;
+    private Dialog dialog;
     ImageView homePlant, officePlant, outsidePlant;
     private int questionIndex = 0;
     private int yesCount = 0;
@@ -48,6 +48,10 @@ public class Home extends AppCompatActivity {
         // Get the username from the Intent
         Intent intent = getIntent();
         username = intent.getStringExtra("USERNAME_KEY");
+
+        if ( username == null ) {
+            username = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+        }
 
         // Find the TextView for username
         editTextUsername = findViewById(R.id.editTextUsername);
@@ -180,17 +184,17 @@ public class Home extends AppCompatActivity {
 
     private void showNextQuestion() {
         if (questionIndex < questions.length) {
-            dialogg = new Dialog(this);
-            dialogg.setContentView(R.layout.customdialog);
-            dialogg.setCancelable(false);
+            dialog = new Dialog(this);
+            dialog.setContentView(R.layout.customdialog);
+            dialog.setCancelable(false);
 
             // Find views inside the custom dialog layout
-            ImageView dialogImage = dialogg.findViewById(R.id.dialogImage);
-            TextView dialogTitle = dialogg.findViewById(R.id.dialogTitle);
-            TextView dialogMessage = dialogg.findViewById(R.id.dialogMessage);
-            Button yesButton = dialogg.findViewById(R.id.yesButton);
-            Button noButton = dialogg.findViewById(R.id.noButton);
-            Button cancelButton = dialogg.findViewById(R.id.cancelButton);
+            ImageView dialogImage = dialog.findViewById(R.id.dialogImage);
+            TextView dialogTitle = dialog.findViewById(R.id.dialogTitle);
+            TextView dialogMessage = dialog.findViewById(R.id.dialogMessage);
+            Button yesButton = dialog.findViewById(R.id.yesButton);
+            Button noButton = dialog.findViewById(R.id.noButton);
+            Button cancelButton = dialog.findViewById(R.id.cancelButton);
 
             dialogTitle.setText("Checking In...");
             dialogMessage.setText(questions[questionIndex]);
@@ -200,7 +204,7 @@ public class Home extends AppCompatActivity {
                 public void onClick(View view) {
                     yesCount++;
                     questionIndex++;
-                    dialogg.dismiss(); // Dismiss the dialog after a choice is made
+                    dialog.dismiss(); // Dismiss the dialog after a choice is made
                     showNextQuestion();
                 }
             });
@@ -210,7 +214,7 @@ public class Home extends AppCompatActivity {
                 public void onClick(View view) {
                     noCount++;
                     questionIndex++;
-                    dialogg.dismiss(); // Dismiss the dialog after a choice is made
+                    dialog.dismiss(); // Dismiss the dialog after a choice is made
                     showNextQuestion();
                 }
             });
@@ -218,11 +222,11 @@ public class Home extends AppCompatActivity {
             cancelButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    dialogg.dismiss(); // Dismiss the dialog when the "Cancel" button is clicked
+                    dialog.dismiss(); // Dismiss the dialog when the "Cancel" button is clicked
                 }
             });
 
-            dialogg.show();
+            dialog.show();
         } else {
             if (noCount > 4) {
                 showSuccessMessage();
