@@ -153,8 +153,10 @@ public class LoginScreen extends AppCompatActivity {
                         username = firebaseUser.getDisplayName();
                         openEnableLocationScreen();
                         Toast.makeText(LoginScreen.this, "Login Successful", Toast.LENGTH_SHORT).show();
+                   
                     } else{
-                        Toast.makeText(LoginScreen.this,"Login Failed. "+task.getException(), Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                        Toast.makeText(LoginScreen.this,"Login Failed"+task.getException(), Toast.LENGTH_SHORT).show();
                     }
                 }
             });
