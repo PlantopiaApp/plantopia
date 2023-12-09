@@ -13,7 +13,7 @@ import retrofit2.http.Part;
 
 public interface PlantIdApiService {
     @Multipart
-    @POST("identify")
+    @POST("/identification")
     Call<PlantIdentificationResponse> identifyPlant(
             @Part("api_key") RequestBody apiKey,
             @Part MultipartBody.Part image);

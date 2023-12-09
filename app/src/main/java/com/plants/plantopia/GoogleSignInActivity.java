@@ -1,3 +1,10 @@
+
+/**
+ * This is a Firebase google authentication.
+ * In this project we are not going to use this method.
+ * NOTE : Got ERROR while using this method.
+ */
+
 package com.plants.plantopia;
 
 import android.app.ProgressDialog;
@@ -6,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -21,7 +29,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 
-public class GoogleSignInActivity extends LoginScreen {
+public class GoogleSignInActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 101;
 
     FirebaseAuth mAuth;
@@ -32,7 +40,6 @@ public class GoogleSignInActivity extends LoginScreen {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login_screen);
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Google Sign In...");

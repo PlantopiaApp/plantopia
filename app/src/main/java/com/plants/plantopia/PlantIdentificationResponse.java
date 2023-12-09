@@ -13,4 +13,3 @@ public class PlantIdentificationResponse {
         return suggestions;
     }
 }
-

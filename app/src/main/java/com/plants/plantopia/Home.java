@@ -7,22 +7,24 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.content.DialogInterface;
 import android.widget.TextView;
 
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 import android.app.AlertDialog;
 
 public class Home extends AppCompatActivity {
 
     private Button btnIdentify;
-
-    private Dialog dialogg;
-    ImageView homePlant;
+    Button species;
+    private String username;
+    private TextView editTextUsername;
+    private Dialog dialog;
+    ImageView homePlant, officePlant, outsidePlant;
     private int questionIndex = 0;
     private int yesCount = 0;
     private int noCount = 0;
@@ -43,11 +45,37 @@ public class Home extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        // Get the username from the Intent
+        Intent intent = getIntent();
+        username = intent.getStringExtra("USERNAME_KEY");
+
+        if ( username == null ) {
+            username = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+        }
+
+        // Find the TextView for username
+        editTextUsername = findViewById(R.id.editTextUsername);
+
+        // Set the username to the TextView
+        if (username != null) {
+            editTextUsername.setText("Hello " + username + ",");
+        }
+
+        // Open Button Identify
         btnIdentify = (Button) findViewById(R.id.btnIdentify);
         btnIdentify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openPlantIdentify();
+            }
+        });
+
+        // Open Button species
+        species = (Button) findViewById(R.id.species);
+        species.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openPlantSpecies();
             }
         });
 
@@ -69,6 +97,22 @@ public class Home extends AppCompatActivity {
             }
         });
 
+        officePlant = (ImageView) findViewById(R.id.imageView5);
+        officePlant.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openOfficePlant();
+            }
+        });
+
+        outsidePlant = (ImageView) findViewById(R.id.imageView6);
+        outsidePlant.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openOutsidePlant();
+            }
+        });
+
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
 
         bottomNavigationView.setSelectedItemId(R.id.dashboard);
@@ -87,6 +131,7 @@ public class Home extends AppCompatActivity {
                     return true;
                 } else if (itemId == R.id.profile) {
                     startActivity(new Intent(getApplicationContext(), Profile.class));
+                    intent.putExtra("USERNAME_KEY", username);
                     overridePendingTransition(0, 0);
                     return true;
                 }
@@ -96,9 +141,33 @@ public class Home extends AppCompatActivity {
         });
 
     }
+    public void openPlantSpecies() {
+        Intent intent = new Intent(this, com.plants.plantopia.SpeciesActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Check if username is not null, and set it to the TextView
+        if (username != null) {
+            editTextUsername.setText("Hello " + username + ",");
+        }
+    }
 
     public void openPlantIdentify() {
         Intent intent = new Intent(this, com.plants.plantopia.PlantIdentify.class);
+        startActivity(intent);
+    }
+
+    public void openOfficePlant() {
+        Intent intent = new Intent(this, com.plants.plantopia.OfficePlant.class);
+        startActivity(intent);
+    }
+
+    public void openOutsidePlant() {
+        Intent intent = new Intent(this, com.plants.plantopia.OutsidePlants.class);
         startActivity(intent);
     }
 
@@ -115,17 +184,17 @@ public class Home extends AppCompatActivity {
 
     private void showNextQuestion() {
         if (questionIndex < questions.length) {
-            dialogg = new Dialog(this);
-            dialogg.setContentView(R.layout.customdialog);
-            dialogg.setCancelable(false);
+            dialog = new Dialog(this);
+            dialog.setContentView(R.layout.customdialog);
+            dialog.setCancelable(false);
 
             // Find views inside the custom dialog layout
-            ImageView dialogImage = dialogg.findViewById(R.id.dialogImage);
-            TextView dialogTitle = dialogg.findViewById(R.id.dialogTitle);
-            TextView dialogMessage = dialogg.findViewById(R.id.dialogMessage);
-            Button yesButton = dialogg.findViewById(R.id.yesButton);
-            Button noButton = dialogg.findViewById(R.id.noButton);
-            Button cancelButton = dialogg.findViewById(R.id.cancelButton);
+            ImageView dialogImage = dialog.findViewById(R.id.dialogImage);
+            TextView dialogTitle = dialog.findViewById(R.id.dialogTitle);
+            TextView dialogMessage = dialog.findViewById(R.id.dialogMessage);
+            Button yesButton = dialog.findViewById(R.id.yesButton);
+            Button noButton = dialog.findViewById(R.id.noButton);
+            Button cancelButton = dialog.findViewById(R.id.cancelButton);
 
             dialogTitle.setText("Checking In...");
             dialogMessage.setText(questions[questionIndex]);
@@ -135,7 +204,7 @@ public class Home extends AppCompatActivity {
                 public void onClick(View view) {
                     yesCount++;
                     questionIndex++;
-                    dialogg.dismiss(); // Dismiss the dialog after a choice is made
+                    dialog.dismiss(); // Dismiss the dialog after a choice is made
                     showNextQuestion();
                 }
             });
@@ -145,7 +214,7 @@ public class Home extends AppCompatActivity {
                 public void onClick(View view) {
                     noCount++;
                     questionIndex++;
-                    dialogg.dismiss(); // Dismiss the dialog after a choice is made
+                    dialog.dismiss(); // Dismiss the dialog after a choice is made
                     showNextQuestion();
                 }
             });
@@ -153,11 +222,11 @@ public class Home extends AppCompatActivity {
             cancelButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    dialogg.dismiss(); // Dismiss the dialog when the "Cancel" button is clicked
+                    dialog.dismiss(); // Dismiss the dialog when the "Cancel" button is clicked
                 }
             });
 
-            dialogg.show();
+            dialog.show();
         } else {
             if (noCount > 4) {
                 showSuccessMessage();
@@ -215,7 +284,6 @@ public class Home extends AppCompatActivity {
         failDialogTitle.setText("Sorry!");
         failDialogMessage.setText("Your plant is in poor condition. It seems you are not taking great care of it.");
 
-        // Customize the image as needed
         // failDialogImage.setImageResource(R.drawable.your_custom_image);
 
         builder.setCancelable(false); // Set cancelable property directly on the builder

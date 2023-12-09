@@ -1,4 +1,13 @@
 <resources>
     <string name="app_name">Plantopia</string>
     <string name="web_client_id" translatable="false">472017619587-qh39fpcgoaqkhv6tcu9i539laqt21vum.apps.googleusercontent.com</string>
+
+    <string name="open_nav">Open Navigation Drawer</string>
+    <string name="close_nav">Close Navigation Drawer</string>
+
+    <string name="facebook_app_id">2082364258779363</string>
+    <string name="fb_login_protocol_scheme">fb1234</string>
+    <string name="facebook_client_token">56789</string>
+
+
 </resources>
