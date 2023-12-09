@@ -38,7 +38,7 @@ public class SignUpScreen extends AppCompatActivity {
     EditText editTextUsername, editTextEmail, editTextPassword1, editTextConfirmPassword;
 
     //Buttons
-    Button buttonSignUp, buttonSignUpFacebook, buttonSignUpGoogle, signIn;
+    Button btnSignUp, btnSignUpFacebook, btnSignUpGoogle, btnSignIn;
 
     // Regular expression to validate email
     String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
@@ -59,10 +59,11 @@ public class SignUpScreen extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up_screen);
 
         // Set all views to properties
-        buttonSignUp = findViewById(R.id.buttonSignUp);
-        buttonSignUpFacebook = findViewById(R.id.buttonSignUpFacebook);
-        buttonSignUpGoogle = findViewById(R.id.buttonSignUpGoogle);
-        signIn = findViewById(R.id.signIn);
+        btnSignUp = findViewById(R.id.buttonSignUp);
+        btnSignUpFacebook = findViewById(R.id.buttonSignUpFacebook);
+        btnSignUpGoogle = findViewById(R.id.buttonSignUpGoogle);
+        btnSignIn = findViewById(R.id.signIn);
+
         editTextUsername = findViewById(R.id.editTextUsername);
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextPassword1 = findViewById(R.id.editTextPassword1);
@@ -75,7 +76,7 @@ public class SignUpScreen extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
 
         //SignUp Button click
-        buttonSignUp.setOnClickListener(new View.OnClickListener() {
+        btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 signupUsingFireBase();
@@ -104,7 +105,7 @@ public class SignUpScreen extends AppCompatActivity {
         });
 
         // Set on click listener for facebook signup button.
-        buttonSignUpFacebook.setOnClickListener(v -> LoginManager.getInstance().logInWithReadPermissions(SignUpScreen.this, Collections.singletonList("public_profile")));
+        btnSignUpFacebook.setOnClickListener(v -> LoginManager.getInstance().logInWithReadPermissions(SignUpScreen.this, Collections.singletonList("public_profile")));
 
         // Set up Google login
         // Instantiate Google SignIn option, it is used to set the configuration for google login
@@ -113,10 +114,10 @@ public class SignUpScreen extends AppCompatActivity {
         googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
 
         //  Set on click listener for google signup
-        buttonSignUpGoogle.setOnClickListener(v -> performGoogleSignin());
+        btnSignUpGoogle.setOnClickListener(v -> performGoogleSignin());
 
         // Login screen
-        signIn.setOnClickListener(new View.OnClickListener() {
+        btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openSignInScreen();
@@ -195,6 +196,7 @@ public class SignUpScreen extends AppCompatActivity {
         super.onActivityResult( requestCode, resultCode, data );
 
         // Here we check the request Code 1000 to determine google signup intent result
+        //  if is successful user will be navigated to location activity screen
         if( requestCode == GOOGLE_SIGN_IN_REQUEST_CODE ){
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent( data );
             try {

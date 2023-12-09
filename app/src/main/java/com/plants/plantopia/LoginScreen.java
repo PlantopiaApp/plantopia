@@ -35,7 +35,7 @@ import java.util.Collections;
 public class LoginScreen extends AppCompatActivity {
 
     // Buttons
-    private Button buttonLogin, signup, buttonSignInFacebook, buttonSignInGoogle;
+    private Button btnLogin, btnSignup, btnSignInFacebook, btnSignInGoogle;
 
     // Google Authentication
     GoogleSignInClient googleSignInClient;
@@ -51,12 +51,17 @@ public class LoginScreen extends AppCompatActivity {
     String username;
     ProgressDialog progressDialog;
     EditText editTextEmail, editTextPassword1;
+    // Regular expression to validate email
     String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_screen);
+
+
+        // Don't hava an account SignUp button
+        btnSignup = findViewById(R.id.signup);
 
         // Retrieve the username from the Intent
         Intent intent = getIntent();
@@ -65,36 +70,31 @@ public class LoginScreen extends AppCompatActivity {
         callbackManager = CallbackManager.Factory.create();
 
         // Signup with facebook
-        LoginManager.getInstance().registerCallback(callbackManager,
-                new FacebookCallback<LoginResult>() {
-                    @Override
-                    public void onSuccess(LoginResult loginResult) {
-                        startActivity(new Intent(LoginScreen.this, Location.class));
-                        finish();
-                    }
+        LoginManager.getInstance().registerCallback( callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                startActivity(new Intent(LoginScreen.this, Location.class));
+                finish();
+            }
+            @Override
+            public void onCancel() {
+                // No need to handle cancel
+            }
+            @Override
+            public void onError(@NonNull FacebookException exception) {
+                // No need to handle error
+            }
+        });
 
-                    @Override
-                    public void onCancel() {
-                        // No need to handle cancel
-                    }
-
-                    @Override
-                    public void onError(@NonNull FacebookException exception) {
-                        // No need to handle error
-                    }
-                });
+        btnSignInFacebook = (Button) findViewById(R.id.buttonSignInFacebook);
+        btnSignInFacebook.setOnClickListener(v -> LoginManager.getInstance().logInWithReadPermissions(LoginScreen.this, Collections.singletonList("public_profile")));
 
         // Set up Google login
         googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
         googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
 
-
-        buttonSignInGoogle = (Button) findViewById(R.id.buttonSignInGoogle);
-        buttonSignInGoogle.setOnClickListener(v -> openLocation());
-
-        buttonSignInFacebook = (Button) findViewById(R.id.buttonSignInFacebook);
-        buttonSignInFacebook.setOnClickListener(v -> LoginManager.getInstance().logInWithReadPermissions(LoginScreen.this, Collections.singletonList("public_profile")));
-
+        btnSignInGoogle = (Button) findViewById(R.id.buttonSignInGoogle);
+        btnSignInGoogle.setOnClickListener(v -> openLocation());
 
         // Signup using email and password
         editTextEmail = findViewById(R.id.editTextEmail);
@@ -103,9 +103,7 @@ public class LoginScreen extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
 
-        // Don't hava an account SignUp button
-        signup = findViewById(R.id.signup);
-        signup.setOnClickListener(new View.OnClickListener() {
+        btnSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openSignupScreen();
@@ -113,8 +111,8 @@ public class LoginScreen extends AppCompatActivity {
         });
 
         //Login button
-        buttonLogin = findViewById(R.id.buttonLogin);
-        buttonLogin.setOnClickListener(new View.OnClickListener() {
+        btnLogin = findViewById(R.id.buttonLogin);
+        btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 performLogin();
